@@ -44,6 +44,14 @@ __host__ __device__ glm::vec3 calculateRandomDirectionInHemisphere(
         + sin(around) * over * perpendicularDirection2;
 }
 
+/*
+    Naive Lambertian diffuse scattering.
+    The throughput is just multiplied by the material color, and a new
+    direction is chosen in a cosine-weighted hemisphere around the normal.
+    Because the BRDF for Lambertian is albedo / pi, and we multiply by
+    cos(theta) when we trace the new ray, we can cancel the pi terms by
+    choosing the new direction with a cosine-weighted probability distribution.
+*/
 __host__ __device__ void scatterRay(
     PathSegment & pathSegment,
     glm::vec3 intersect,
@@ -54,4 +62,9 @@ __host__ __device__ void scatterRay(
     // TODO: implement this.
     // A basic implementation of pure-diffuse shading will just call the
     // calculateRandomDirectionInHemisphere defined above.
+    glm::vec3 newDirection = calculateRandomDirectionInHemisphere(normal, rng);
+    pathSegment.ray.origin = intersect + DELTA * normal; // avoid self-intersection
+    pathSegment.ray.direction = newDirection;
+    pathSegment.color *= m.color; // see explanation above
+    pathSegment.remainingBounces--;
 }

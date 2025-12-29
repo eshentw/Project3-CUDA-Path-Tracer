@@ -20,10 +20,11 @@ __host__ __device__ float boxIntersectionTest(
         float qdxyz = q.direction[xyz];
         /*if (glm::abs(qdxyz) > 0.00001f)*/
         {
+            // q.origin[xyz] + t * q.direction[xyz] = ±0.5
             float t1 = (-0.5f - q.origin[xyz]) / qdxyz;
             float t2 = (+0.5f - q.origin[xyz]) / qdxyz;
-            float ta = glm::min(t1, t2);
-            float tb = glm::max(t1, t2);
+            float ta = glm::min(t1, t2); // entering the slab
+            float tb = glm::max(t1, t2); // exiting the slab
             glm::vec3 n;
             n[xyz] = t2 < t1 ? +1 : -1;
             if (ta > 0 && ta > tmin)

@@ -219,7 +219,7 @@ bool init()
     glfwSetKeyCallback(window, keyCallback);
     glfwSetCursorPosCallback(window, mousePositionCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
-
+    glfwSwapInterval(0);
     // Set up GL context
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK)
